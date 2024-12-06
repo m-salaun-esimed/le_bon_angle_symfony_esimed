@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Advert index{% endblock %}
+
+{% block body %}
+    <h1>Advert index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Author</th>
+                <th>Email</th>
+                <th>Price</th>
+                <th>State</th>
+                <th>CreatadAt</th>
+                <th>PublishAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for advert in adverts %}
+            <tr>
+                <td>{{ advert.id }}</td>
+                <td>{{ advert.title }}</td>
+                <td>{{ advert.content }}</td>
+                <td>{{ advert.author }}</td>
+                <td>{{ advert.email }}</td>
+                <td>{{ advert.price }}</td>
+                <td>{{ advert.state }}</td>
+                <td>{{ advert.creatadAt ? advert.creatadAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ advert.publishAt ? advert.publishAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_advert_show', {'id': advert.id}) }}">show</a>
+                    {% if not is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_advert_edit', {'id': advert.id}) }}">edit</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if not is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_advert_new') }}">Create new</a>
+    {% endif %}
+        <div class="pagination">
+        {% if previous >= 0 %}
+            <a href="{{ path('app_advert_index', { 'offset': previous }) }}">Page précédente</a>
+        {% endif %}
+        {% if next < adverts|length %}
+            <a href="{{ path('app_advert_index', { 'offset': next }) }}">Page suivante</a>
+        {% endif %}
+    </div>
+{% endblock %}
